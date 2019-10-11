@@ -1,7 +1,7 @@
 
 module.exports = (app) => {
 
-  const DEFAULT_COOKIE_OPTIONS = { maxAge: 900000, httpOnly: false };
+  const DEFAULT_COOKIE_OPTIONS = { maxAge: (60 * 24 * 365 * 10), httpOnly: false };
 
   function setCookie(res, name, value, options) {
     if (options == null) options = DEFAULT_COOKIE_OPTIONS;
@@ -51,13 +51,13 @@ module.exports = (app) => {
 
   app.post('/consent/accept', (req, res) => {
     setCookie(res, 'consent', 'accepted');
-    res.cookie('etbID', req.body.etbID, { maxAge: 900000, httpOnly: false });
-    res.cookie('adID',  req.body.adID,  { maxAge: 900000, httpOnly: false });
+    setCookie(res, 'etbID',   req.body.etbID);
+    setCookie(res, 'adID',    req.body.adID);
     res.redirect('/mobile/accepted');
   });
 
   app.post('/consent/reject', (req, res) => {
-    res.cookie('consent', 'accepted',   { maxAge: 900000, httpOnly: true });
+    setCookie(res, 'consent', 'rejected');
     res.redirect('/mobile/rejected');
   });
 
