@@ -2,6 +2,8 @@ function resetCookie() {
   location.replace('/reset');
 }
 
+const IDMP_COOKIES = ['consent', 'etbID', 'adID'];
+
 function cookieContent() {
   var lines = [];
   var pairs = document.cookie.split(';');
@@ -15,6 +17,7 @@ function cookieContent() {
     for (var i=0; i<pairs.length; i++){
       var pair = pairs[i].split("=");
       var key = (pair[0]+'').trim();
+      if (IDMP_COOKIES.indexOf(key) < 0) continue;
       var value = unescape(pair.slice(1).join('='));
       lines.push('<tr><td>' + key + '</td><td>' + value + '</td></tr>');
     }
