@@ -23,6 +23,10 @@ module.exports = (app) => {
   });
 
   app.get('/consent/start', (req, res) => {
+    if (req.cookies.consent == 'accepted') {
+      res.redirect('/consent/already');
+      return;
+    }
     let url = req.originalUrl;
     let startQuery = url.lastIndexOf("?");
     let plusSign = url.lastIndexOf("+");
