@@ -1,0 +1,80 @@
+<div>&nbsp;</div>
+
+<div style="color: navy; border: navy;">
+
+  <div><b>Mobile app emulation</b></div>
+
+  <table cellpadding="3" border="1" style="border: 1px navy; border-collapse: collapse; font-family: monospace;">
+    <tr>
+      <th>REF ID</th>
+      <td id="REF_ID"></td>
+    </tr>
+    <tr>
+      <th align="right">AD ID</th>
+      <td id="AD_ID"></td>
+    </tr>
+  </table>
+
+  <div>&nbsp;</div>
+
+  <div><b>Push Message</b></div>
+
+
+  <div style="display: inline-block;">
+    <button onclick="simulatePushMessage();">Simulate Push Message</button>
+    <div id="messagePushed" style="border: 1px solid lightgrey; padding: 0.5em;">
+      &ltblank&gt
+    </div>
+  </div>
+
+</div>
+
+<script>
+  async function showRefId() {
+  var refId = window.localStorage.getItem('MOBILE_REF_ID');
+  if (refId == null) {
+  refId = Math.floor(Math.random() * 10000000);
+  window.localStorage.setItem('MOBILE_REF_ID', refId);
+  }
+  document.getElementById('REF_ID').textContent = refId;
+  }
+  async function NewUUID(cb) {
+  return new Promise((ok, reject) => {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', 'uuid');
+  xhr.onload = () => {
+  if (xhr.status == 200) ok(xhr.responseText)
+  else reject(xhr.responseText);
+  }
+  xhr.send();
+  });
+  }
+  async function showAdId() {
+  var adId = window.localStorage.getItem('MOBILE_AD_ID');
+  if (adId == null) {
+  adId = await NewUUID();
+  window.localStorage.setItem('MOBILE_AD_ID', adId);
+  }
+  document.getElementById('AD_ID').textContent = adId;
+  }
+  async function resetAdId() {
+  window.localStorage.removeItem('MOBILE_AD_ID');
+  showAdId();
+  }
+  async function simulatePushMessage() {
+  var refId = window.localStorage.getItem('MOBILE_REF_ID');
+  var adId = window.localStorage.getItem('MOBILE_AD_ID');
+  var url = "consent/start?" + refId + "+" + adId;
+  var msg = document.getElementById('messagePushed');
+  var linkContent = url;
+  msg.innerHTML = [
+  '<pre>',
+    'Hi customer. Please check out below link',
+    '<a target="_blank" href="' + url + '">' + linkContent + '</a>',
+    '(In reality, we won\'t display url to customer)',
+    '</pre>'
+  ].join('\n');
+  }
+  showRefId();
+  showAdId();
+</script>

@@ -1,0 +1,4 @@
+/bin
+*~
+/js/*.js~
+/node_modules

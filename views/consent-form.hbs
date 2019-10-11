@@ -1,0 +1,20 @@
+<h1>{{title}}</h1>
+<p>Do you agree on consent ? </p>
+<div>
+   <form id="accept" style="display: inline-block;" action="/consent/accept" method="POST">
+     <input type="hidden" id="accept.etbID" name="etbID" value="">
+     <input type="hidden" id="accept.adID"  name="adID"  value="">
+     <button>Yes</button>
+   </form>
+   <form id="reject" style="display: inline-block;" action="/consent/reject" method="POST">
+     <input type="hidden" id="reject.etbID" name="etbID" value="">
+     <input type="hidden" id="reject.adID"  name="adID"  value="">
+     <button>No</button>
+   </form>
+</div>
+<script>
+   document.getElementById('accept.etbID').value = localStorage.getItem('etbID');
+   document.getElementById('accept.adID') .value = localStorage.getItem('adID');
+   document.getElementById('accept.etbID').value = localStorage.getItem('etbID');
+   document.getElementById('reject.adID') .value = localStorage.getItem('adID');
+</script>
