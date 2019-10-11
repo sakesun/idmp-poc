@@ -31,49 +31,49 @@
 
 <script>
   async function showRefId() {
-  var refId = window.localStorage.getItem('MOBILE_REF_ID');
-  if (refId == null) {
-  refId = Math.floor(Math.random() * 10000000);
-  window.localStorage.setItem('MOBILE_REF_ID', refId);
-  }
-  document.getElementById('REF_ID').textContent = refId;
+    var refId = window.localStorage.getItem('MOBILE_REF_ID');
+    if (refId == null) {
+      refId = Math.floor(Math.random() * 10000000);
+      window.localStorage.setItem('MOBILE_REF_ID', refId);
+    }
+    document.getElementById('REF_ID').textContent = refId;
   }
   async function NewUUID(cb) {
-  return new Promise((ok, reject) => {
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', 'uuid');
-  xhr.onload = () => {
-  if (xhr.status == 200) ok(xhr.responseText)
-  else reject(xhr.responseText);
-  }
-  xhr.send();
-  });
+    return new Promise((ok, reject) => {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'uuid');
+      xhr.onload = () => {
+        if (xhr.status == 200) ok(xhr.responseText);
+        else reject(xhr.responseText);
+      }
+      xhr.send();
+    });
   }
   async function showAdId() {
-  var adId = window.localStorage.getItem('MOBILE_AD_ID');
-  if (adId == null) {
-  adId = await NewUUID();
-  window.localStorage.setItem('MOBILE_AD_ID', adId);
-  }
-  document.getElementById('AD_ID').textContent = adId;
+    var adId = window.localStorage.getItem('MOBILE_AD_ID');
+    if (adId == null) {
+      adId = await NewUUID();
+      window.localStorage.setItem('MOBILE_AD_ID', adId);
+    }
+    document.getElementById('AD_ID').textContent = adId;
   }
   async function resetAdId() {
-  window.localStorage.removeItem('MOBILE_AD_ID');
-  showAdId();
+    window.localStorage.removeItem('MOBILE_AD_ID');
+    showAdId();
   }
   async function simulatePushMessage() {
-  var refId = window.localStorage.getItem('MOBILE_REF_ID');
-  var adId = window.localStorage.getItem('MOBILE_AD_ID');
-  var url = "consent/start?" + refId + "+" + adId;
-  var msg = document.getElementById('messagePushed');
-  var linkContent = url;
-  msg.innerHTML = [
-  '<pre>',
-    'Hi customer. Please check out below link',
-    '<a target="_blank" href="' + url + '">' + linkContent + '</a>',
-    '(In reality, we won\'t display url to customer)',
-    '</pre>'
-  ].join('\n');
+    var refId = window.localStorage.getItem('MOBILE_REF_ID');
+    var adId = window.localStorage.getItem('MOBILE_AD_ID');
+    var url = "consent/start?" + refId + "+" + adId;
+    var msg = document.getElementById('messagePushed');
+    var linkContent = url;
+    msg.innerHTML = [
+      '<pre>',
+      'Hi customer. Please check out below link',
+      '<a target="_blank" href="' + url + '">' + linkContent + '</a>',
+      '(In reality, we won\'t display url to customer)',
+      '</pre>'
+    ].join('\n');
   }
   showRefId();
   showAdId();
