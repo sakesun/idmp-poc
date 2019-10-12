@@ -1,10 +1,16 @@
 
 module.exports = (app) => {
 
-  const DEFAULT_COOKIE_OPTIONS = { maxAge: (60 * 24 * 365 * 10), httpOnly: false };
+  const DEFAULT_COOKIE_MAXAGE  = (1000 * 60 * 60 * 24 * 365 * 10);
+  const DEFAULT_COOKIE_EXPIRES = new Date(Number(new Date()) + DEFAULT_COOKIE_MAXAGE);
+  const DEFAULT_COOKIE_OPTIONS = {
+    expires: DEFAULT_COOKIE_EXPIRES,
+    maxAge:  DEFAULT_COOKIE_MAXAGE,
+    httpOnly: false };
 
   function setCookie(res, name, value, options) {
     if (options == null) options = DEFAULT_COOKIE_OPTIONS;
+    console.log(options);
     res.cookie(name, value, options);
   }
 
