@@ -1,4 +1,3 @@
-
 module.exports = (app) => {
 
   const DEFAULT_COOKIE_MAXAGE  = (1000 * 60 * 60 * 24 * 365 * 10);
@@ -13,8 +12,6 @@ module.exports = (app) => {
     console.log(options);
     res.cookie(name, value, options);
   }
-
-  let fs = require('fs');
 
   app.get('/uuid', (req, res) => {
     let uuid = require('uuid');
