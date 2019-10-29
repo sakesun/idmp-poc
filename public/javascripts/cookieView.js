@@ -6,10 +6,10 @@ const IDMP_COOKIES = ['consent', 'etbID', 'adID'];
 
 function cookieContent() {
   var lines = [];
-  var pairs = document.cookie.split(';');
   if (document.cookie == null || document.cookie == '') {
     lines.push('<div style="color: brown">&lt;No cookie&gt;</div>');
   } else {
+    var pairs = document.cookie.split(';');
     lines.push('<div style="color: brown;">');
     lines.push('<button onclick="resetCookie();">Reset Cookie</button>');
     lines.push('<table cellpadding="3" border="1" style="border: 1px brown; border-collapse: collapse; font-family: monospace">');
