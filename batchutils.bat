@@ -22,7 +22,8 @@ exit /b %errorlevel%
     set "WORDS=0"
     for %%a in (%VAL%) do set /a "WORDS+=1"
     set /a "IDX=%WORDS + 1"
-    for /f "skip=2 tokens=%IDX%*" %%a in ('reg query "%KEY%" /v "%VAL%" 2^>NUL') do (
+    set "CMD=%SystemRoot%\System32\reg.exe query "%KEY%" /v "%VAL%""
+    for /f "skip=2 tokens=%IDX%*" %%a in ('%CMD% 2^>NUL') do (
       set "R=%%b"
     )
   endlocal & set "%1=%R%"
@@ -59,6 +60,13 @@ exit /b %errorlevel%
   setlocal enableextensions enabledelayedexpansion
     set "APPEND=%1"
     call :DeQuote APPEND %APPEND%
-    if "!PATH:%APPEND%;=!;"=="!PATH!;" set "PATH=%APPEND%;!PATH!"
+    if "%APPEND%"=="" goto :eof
+    if not "%PATH%"=="" goto :PathPrepend_do_prepend
+      set "PATH=%APPEND%"
+      goto :PathPrepend_end
+    :PathPrepend_do_prepend
+      set "PX=%PATH%;"
+      if "!PX:%APPEND%;=!"=="!PX!" set "PATH=%APPEND%;!PATH!"
+    :PathPrepend_end
   endlocal & set "PATH=%PATH%"
   goto :eof

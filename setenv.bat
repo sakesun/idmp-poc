@@ -18,5 +18,6 @@ goto :Run
   setlocal
     call :GetDB2Path DB2PATH
     call :utils :PathPrepend %DB2PATH%
+    call :utils :PathPrepend %~dp0php
+    call :utils :PathPrepend %~dp0
   endlocal & set "PATH=%PATH%"
-  echo %PATH%
