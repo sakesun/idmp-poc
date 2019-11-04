@@ -45,10 +45,10 @@ exit /b %errorlevel%
       for /f "delims=;" %%g in ("!P!") do (
         set "R=!R!^ "%%g^""
         set "P=!P:%%g;=!"
-        if "!P!" == "%%g" goto :BR
+        if "!P!" == "%%g" goto :PathItems_end
       )
     )
-    :BR
+    :PathItems_end
   endlocal & set "%1=%R%"
   goto :eof
 
