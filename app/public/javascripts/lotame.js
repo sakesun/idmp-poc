@@ -18,15 +18,18 @@ function LotameProfileLoader(account, onProfile) {
   this.constructor.instances = i + 1;
   var n = this.constructor.name + 'OnProfile' + i;
   var self = this;
-  window[n] = function (p) { self.callback(p); };
+  window[n] = function (p) { self.jsonpCallback(p); };
   if (account == null || account == '') account = 221;
   this.src = 'https://ad.crwdcntrl.net/5/c=' + account + '/pe=y/callback=' + n;
   this.onProfile = onProfile;
 }
 
-LotameProfileLoader.prototype.callback = function(p) {
+LotameProfileLoader.prototype.jsonpCallback = function(data) {
   lotameLog('Lotame profile onProfile: ' + JSON.stringify(p));
-  if (this.onProfile != null) this.onProfile(p);
+  if (this.onProfile != null) {
+    if (data == null) this.onProfile(null);
+    this.onProfile(data.Profile);
+  }
   if (this.script    != null) this.script.remove();
 };
 
