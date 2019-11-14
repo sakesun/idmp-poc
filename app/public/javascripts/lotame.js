@@ -51,6 +51,10 @@ function lotameLoadProfile(account, onProfile) {
     if (p.pid != "") {
       onProfile(p);
     } else {
+      lotameAutoBcp(account, function() {
+        lotameLoadProfile(account, onProfile);
+      });
+      return;
       lotameBcp(account, function(bcp) {
         bcp.bcp();
         window.setTimeout(function() {
@@ -68,6 +72,13 @@ function lotameBcp(account, onBcp) {
   lotameInsertScript(id, src, function() {
     var bcp = window[name];
     onBcp(bcp);
+  });
+}
+
+function lotameAutoBcp(account, afterBcp) {
+  var src = 'https://tags.crwdcntrl.net/c/' + account + '/cc_af.js';
+  lotameInsertScript(null, src, function() {
+    afterBcp();
   });
 }
 
