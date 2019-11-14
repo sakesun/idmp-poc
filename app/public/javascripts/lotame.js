@@ -17,7 +17,7 @@ function LotameProfileLoader(account, onProfile) {
   this.instanceId = i;
   this.constructor.instances = i + 1;
   var n = this.constructor.name + 'Callback' + i;
-  window[n] = function (p) { this.callback(p); };
+  window[n] = function (p) { this.onProfile(p); };
   if (account == null || account == '') account = 221;
   this.src = 'https://ad.crwdcntrl.net/5/c=' + account + '/pe=y/callback=' + n;
   this.onProfile = onProfile;
