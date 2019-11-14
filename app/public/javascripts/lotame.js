@@ -4,7 +4,7 @@ function lotameInsertScript(src, onload) {
   let script = document.createElement('script');
   script.onload = function() {
     lotameLog('Script loaded');
-    onload();
+    if (onload != null) onload();
   };
   script.src = src;
   document.body.appendChild(script);
@@ -33,7 +33,7 @@ LotameProfileLoader.prototype.callback = function(p) {
 LotameProfileLoader.prototype.load = function() {
   if (this.script != null) return;
   self = this;
-  this.script = lotameInsertScript(this.src, function(p) { self.onProfile(p); });
+  this.script = lotameInsertScript(this.src);
 };
 
 function tryLoadProfile(account, onProfile) {
