@@ -32,7 +32,8 @@ LotameProfileLoader.prototype.callback = function(p) {
 
 LotameProfileLoader.prototype.load = function() {
   if (this.script != null) return;
-  this.script = lotameInsertScript(this.src, function(p) { this.onProfile(p); });
+  self = this;
+  this.script = lotameInsertScript(this.src, function(p) { self.onProfile(p); });
 };
 
 function tryLoadProfile(account, onProfile) {
