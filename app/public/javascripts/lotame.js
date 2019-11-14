@@ -18,14 +18,14 @@ function LotameProfileLoader(account, onProfile) {
   this.constructor.instances = i + 1;
   var n = this.constructor.name + 'OnProfile' + i;
   var self = this;
-  window[n] = function (p) { self.jsonpCallback(p); };
+  window[n] = function (data) { self.jsonpCallback(data); };
   if (account == null || account == '') account = 221;
   this.src = 'https://ad.crwdcntrl.net/5/c=' + account + '/pe=y/callback=' + n;
   this.onProfile = onProfile;
 }
 
 LotameProfileLoader.prototype.jsonpCallback = function(data) {
-  lotameLog('Lotame profile onProfile: ' + JSON.stringify(p));
+  lotameLog('Lotame profile onProfile: ' + JSON.stringify(data));
   if (this.onProfile != null) {
     if (data == null) this.onProfile(null);
     this.onProfile(data.Profile);
