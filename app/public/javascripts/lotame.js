@@ -1,45 +1,70 @@
+function lotameLog(log) { console.log(log); }
+
 function lotameInsertScript(src, onload) {
   let script = document.createElement('script');
-  script.onload = onload;
+  script.onload = function() {
+    lotameLog('Script loaded');
+    onload();
+  };
   script.src = src;
   document.body.appendChild(script);
-  console.log('Script tag inserted');
+  lotameLog('Script tag inserted');
+  return script;
 }
 
-var lotameExtractProfile_done = false;
-var lotameExtractProfile_onLoadProfile = null;
-function lotameExtractProfile_callback(profile) {
-  var onLoadProfile = lotameExtractProfile_onLoadProfile;
-  lotameExtractProfile_done = true;
-  lotameExtractProfile_onLoadProfile = null;
-  if (onLoadProfile == null) return;
-  onLoadProfile(profile);
-}
-function lotameExtractProfile(onLoadProfile) {
-  if (lotameExtractProfile_done) return;
-  lotameExtractProfile_onLoadProfile = onLoadProfile;
-  let src = 'https://ad.crwdcntrl.net/5/c=221/pe=y/callback=lotameExtractProfile_callback';
-  lotameInsertScript(src);
+function LotameProfileLoader(account, onProfile) {
+  var i = this.constructor.instances || 0;
+  this.instanceId = i;
+  this.constructor.instances = i + 1;
+  var n = this.constructor.name + 'Callback' + i;
+  window[n] = function (p) { this.callback(p); };
+  if (account == null || account == '') account = 221;
+  this.src = 'https://ad.crwdcntrl.net/5/c=' + account + '/pe=y/callback=' + n;
+  this.onProfile = onProfile;
 }
 
-var lotameBcpTag_done = false;
-function lotameBcpTag(onLoadBcp) {
-  if (lotameBcpTag_done) return;
-  lotameInsertScript('https://tags.crwdcntrl.net/c/14487/cc.js?ns=_cc14487', function() {
-    lotameBcpTag_done = true;
-    onLoadBcp(window._cc14487);
+LotameProfileLoader.prototype.callback = function(p) {
+  lotameLog('Lotame profile callback: ' + JSON.stringify(p));
+  if (this.onProfile != null) this.onProfile(p);
+  if (this.script     != null) this.script.remove();
+};
+
+LotameProfileLoader.prototype.load = function() {
+  if (this.script != null) return;
+  this.script = lotameInsertScript(this.src, function(p) { this.callback(p); });
+};
+
+function tryLoadProfile(account, onProfile) {
+  var loader = new LotameProfileLoader(account, onProfile);
+  loader.load();
+}
+
+function lotameLoadProfile(account, onProfile) {
+  tryLoadProfile(account, function(p) {
+    if (p.pid != "") {
+      onProfile(p);
+    } else {
+      var MILLISECONDS_AFTER_BCP = 1000;
+      lotameBcp(account, function(bcp) {
+        bcp.bcp();
+        window.setTimeout(function() {
+          lotameLoadProfile(account, onProfile);
+        }, MILLISECONDS_AFTER_BCP);
+      });
+    }
+  });
+}
+
+function lotameBcp(account, onBcp) {
+  var name = '_cc' + account;
+  var src = 'https://tags.crwdcntrl.net/c/' + account + '/cc.js?ns=' + name;
+  lotameInsertScript(src, function() {
+    var bcp = window[name];
+    onBcp(bcp);
   });
 }
 
 function showLotameProfile(profile) {
-  if (profile.pid == "") {
-    lotameExtractProfile_done = false;
-    lotameBcpTag(function(bcp) {
-      bcp.bcp();
-      window.setTimeout(extractAndShowLotameProfile, 2000);
-    });
-    return;
-  }
   let FirstPartyAudience = profile.Profile.Audiences.Audience || [];
   let ThirdPartyAudience = profile.Profile.Audiences.ThirdPartyAudience || [];
   let AllAudiences = FirstPartyAudience.concat(ThirdPartyAudience);
@@ -61,7 +86,7 @@ function showLotameProfile(profile) {
 }
 
 function extractAndShowLotameProfile() {
-  lotameExtractProfile(showLotameProfile);
+  lotameLoadProfile('221', showLotameProfile);
 }
 
 function activateIfGotConsent() {
