@@ -16,7 +16,7 @@ function LotameProfileLoader(account, onProfile) {
   var i = this.constructor.instances || 0;
   this.instanceId = i;
   this.constructor.instances = i + 1;
-  var n = this.constructor.name + 'Callback' + i;
+  var n = this.constructor.name + 'OnProfile' + i;
   window[n] = function (p) { this.onProfile(p); };
   if (account == null || account == '') account = 221;
   this.src = 'https://ad.crwdcntrl.net/5/c=' + account + '/pe=y/callback=' + n;
@@ -26,12 +26,12 @@ function LotameProfileLoader(account, onProfile) {
 LotameProfileLoader.prototype.callback = function(p) {
   lotameLog('Lotame profile callback: ' + JSON.stringify(p));
   if (this.onProfile != null) this.onProfile(p);
-  if (this.script     != null) this.script.remove();
+  if (this.script    != null) this.script.remove();
 };
 
 LotameProfileLoader.prototype.load = function() {
   if (this.script != null) return;
-  this.script = lotameInsertScript(this.src, function(p) { this.callback(p); });
+  this.script = lotameInsertScript(this.src, function(p) { this.onProfile(p); });
 };
 
 function tryLoadProfile(account, onProfile) {
