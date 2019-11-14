@@ -17,14 +17,15 @@ function LotameProfileLoader(account, onProfile) {
   this.instanceId = i;
   this.constructor.instances = i + 1;
   var n = this.constructor.name + 'OnProfile' + i;
-  window[n] = function (p) { this.onProfile(p); };
+  var self = this;
+  window[n] = function (p) { self.callback(p); };
   if (account == null || account == '') account = 221;
   this.src = 'https://ad.crwdcntrl.net/5/c=' + account + '/pe=y/callback=' + n;
   this.onProfile = onProfile;
 }
 
 LotameProfileLoader.prototype.callback = function(p) {
-  lotameLog('Lotame profile callback: ' + JSON.stringify(p));
+  lotameLog('Lotame profile onProfile: ' + JSON.stringify(p));
   if (this.onProfile != null) this.onProfile(p);
   if (this.script    != null) this.script.remove();
 };
