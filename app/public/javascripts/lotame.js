@@ -32,7 +32,7 @@ LotameProfileLoader.prototype.jsonpCallback = function(data) {
     if (data == null) this.onProfile(null);
     this.onProfile(data.Profile);
   }
-  if (this.script    != null) this.script.remove();
+  if (this.script != null) this.script.remove();
 };
 
 LotameProfileLoader.prototype.load = function() {
