@@ -1,3 +1,5 @@
+var MILLISECONDS_AFTER_BCP = 200;
+
 function lotameLog(log) { console.log(log); }
 
 function lotameInsertScript(id, src, onload) {
@@ -49,7 +51,6 @@ function lotameLoadProfile(account, onProfile) {
     if (p.pid != "") {
       onProfile(p);
     } else {
-      var MILLISECONDS_AFTER_BCP = 1000;
       lotameBcp(account, function(bcp) {
         bcp.bcp();
         window.setTimeout(function() {
