@@ -37,7 +37,6 @@ LotameProfileLoader.prototype.jsonpCallback = function(data) {
 
 LotameProfileLoader.prototype.load = function() {
   if (this.script != null) return;
-  self = this;
   this.script = lotameInsertScript(null, this.src);
 };
 
