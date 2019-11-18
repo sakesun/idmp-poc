@@ -3,7 +3,7 @@ var MILLISECONDS_AFTER_BCP = 200;
 function lotameLog(log) { console.log(log); }
 
 function lotameInsertScript(id, src, onload) {
-  let script = document.createElement('script');
+  var script = document.createElement('script');
   script.onload = function() {
     lotameLog('Script loaded');
     if (onload != null) onload();
@@ -71,19 +71,20 @@ function lotameBcp(account, onBcp) {
 }
 
 function showLotameProfile(profile) {
-  let FirstPartyAudience = profile.Audiences.Audience || [];
-  let ThirdPartyAudience = profile.Audiences.ThirdPartyAudience || [];
-  let AllAudiences = FirstPartyAudience.concat(ThirdPartyAudience);
-  let place = document.getElementById('lotame');
+  var FirstPartyAudience = profile.Audiences.Audience || [];
+  var ThirdPartyAudience = profile.Audiences.ThirdPartyAudience || [];
+  var AllAudiences = FirstPartyAudience.concat(ThirdPartyAudience);
+  var place = document.getElementById('lotame');
   if (AllAudiences.length == 0) {
-    let div = document.createElement('div');
+    var div = document.createElement('div');
     div.appendChild(document.createTextNode('<NONE>'));
     place.appendChild(div);
   } else {
-    let ul = document.createElement('ul');
-    let audiences = AllAudiences.map(aud => aud.name || aud.abbr).sort();
-    for (let aud of audiences) {
-      let li = document.createElement('li');
+    var ul = document.createElement('ul');
+    function getAudText(aud) { return aud.name || aud.abbr; }
+    var audiences = AllAudiences.map(getAudText).sort();
+    for (var aud of audiences) {
+      var li = document.createElement('li');
       li.appendChild(document.createTextNode(aud));
       ul.appendChild(li);
     }
