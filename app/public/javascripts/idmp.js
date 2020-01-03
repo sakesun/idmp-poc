@@ -1,4 +1,5 @@
 var MILLISECONDS_AFTER_BCP = 200;
+var MAX_LOAD_PROFILE_COUNT = 20;
 
 function idmpLog(log) { console.log(log); }
 
@@ -46,7 +47,9 @@ function tryLoadProfile(account, onProfile) {
   return loader;
 }
 
-function lotameLoadProfile(account, onProfile) {
+function lotameLoadProfile(account, onProfile, counter) {
+  counter = counter || 0;
+  if (counter >= MAX_LOAD_PROFILE_COUNT) return;
   tryLoadProfile(account, function(p) {
     if (p.pid != "") {
       onProfile(p);
@@ -54,7 +57,7 @@ function lotameLoadProfile(account, onProfile) {
       lotameBcp(account, function(bcp) {
         bcp.bcp();
         window.setTimeout(function() {
-          lotameLoadProfile(account, onProfile);
+          lotameLoadProfile(account, onProfile, counter + 1);
         }, MILLISECONDS_AFTER_BCP);
       });
     }
