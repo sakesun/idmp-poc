@@ -64,6 +64,47 @@ module.exports = (app) => {
     res.redirect('/mobile/rejected');
   });
 
+  const LOG_FILE = require('path').join(__dirname, '..', 'public', 'log-file.txt');
+
+  app.get('/mobile/send-id', (req, res) => {
+    res.send('hi');
+  });
+
+  app.post('/mobile/send-id', (req, res) => {
+    let REF_ID = req.body.REF_ID;
+    let AD_ID  = req.body.AD_ID;
+    let timestamp = new Date().toISOString();
+    let line = `${timestamp}: [send-id] REF_ID=${REF_ID}, AD_ID=${AD_ID}\n`;
+    console.log(line);
+    require('fs').appendFile(LOG_FILE, line, function() {});
+    res.sendStatus(200);
+  });
+
+  app.post('/mobile/login-start', (req, res) => {
+    let REF_ID = req.body.REF_ID;
+    let AD_ID  = req.body.AD_ID;
+    let timestamp = new Date().toISOString();
+    let line = `${timestamp}: [login-start] REF_ID=${REF_ID}, AD_ID=${AD_ID}\n`;
+    console.log(line);
+    require('fs').appendFile(LOG_FILE, line, function() {});
+    res.sendStatus(200);
+  });
+
+  function serveSwaggerPage(app, path, doc) {
+    const swaggerUi = require('swagger-ui-express');
+    const html = swaggerUi.generateHTML(doc);
+    app.use(path, swaggerUi.serveFiles(doc));
+    app.get(path, (req, res) => { res.send(html); });
+  }
+
+  function serveSwaggerYamlFile(app, path, filename) {
+    const yamljs = require('yamljs');
+    const doc = yamljs.load(filename);
+    serveSwaggerPage(app, path, doc);
+  }
+
+  serveSwaggerYamlFile(app, '/docs/poc', require('path').join(__dirname, 'poc.yaml'));
+
   app.get('/:parent/:child', (req, res) => {
     let parent = req.params.parent;
     let child  = req.params.child;
@@ -75,4 +116,5 @@ module.exports = (app) => {
     let name = req.params.name;
     res.render(name, {title: name});
   });
+
 };

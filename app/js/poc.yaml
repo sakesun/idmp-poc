@@ -1,0 +1,53 @@
+swagger: "2.0"
+
+info:
+  version: 1.0.0
+  title: IDMP POC
+  description: API for IDMP POC
+
+basePath: /
+
+paths:
+  /log-file.txt:
+    get:
+      produces:
+        - text/plain
+      responses:
+        '200':
+          description: OK
+
+  /mobile/send-id:
+    post:
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: request
+          schema:
+            type: object
+            properties:
+              REF_ID:
+                type: string
+              AD_ID:
+                type: string
+      responses:
+        '200':
+          description: OK
+
+  /mobile/login-start:
+    post:
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: request
+          schema:
+            type: object
+            properties:
+              REF_ID:
+                type: string
+              AD_ID:
+                type: string
+      responses:
+        '200':
+          description: OK
