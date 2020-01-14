@@ -9,7 +9,6 @@ module.exports = (app) => {
 
   function setCookie(res, name, value, options) {
     if (options == null) options = DEFAULT_COOKIE_OPTIONS;
-    console.log(options);
     res.cookie(name, value, options);
   }
 
@@ -75,7 +74,6 @@ module.exports = (app) => {
     let AD_ID  = req.body.AD_ID;
     let timestamp = new Date().toISOString();
     let line = `${timestamp}: [send-id] REF_ID=${REF_ID}, AD_ID=${AD_ID}\n`;
-    console.log(line);
     require('fs').appendFile(LOG_FILE, line, function() {});
     res.sendStatus(200);
   });
@@ -85,7 +83,6 @@ module.exports = (app) => {
     let AD_ID  = req.body.AD_ID;
     let timestamp = new Date().toISOString();
     let line = `${timestamp}: [login-start] REF_ID=${REF_ID}, AD_ID=${AD_ID}\n`;
-    console.log(line);
     require('fs').appendFile(LOG_FILE, line, function() {});
     res.sendStatus(200);
   });
