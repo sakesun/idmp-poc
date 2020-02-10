@@ -72,8 +72,9 @@ module.exports = (app) => {
   app.post('/mobile/send-id', (req, res) => {
     let REF_ID = req.body.REF_ID;
     let AD_ID  = req.body.AD_ID;
+	let MU_ID  = req.body.MU_ID || "";
     let timestamp = new Date().toISOString();
-    let line = `${timestamp}: [send-id] REF_ID=${REF_ID}, AD_ID=${AD_ID}\n`;
+    let line = `${timestamp}: [send-id] REF_ID=${REF_ID}, AD_ID=${AD_ID}, MU_ID=${MU_ID}\n`;
     require('fs').appendFile(LOG_FILE, line, function() {});
     res.sendStatus(200);
   });
@@ -81,8 +82,9 @@ module.exports = (app) => {
   app.post('/mobile/login-start', (req, res) => {
     let REF_ID = req.body.REF_ID;
     let AD_ID  = req.body.AD_ID;
+	let MU_ID  = req.body.MU_ID || "";
     let timestamp = new Date().toISOString();
-    let line = `${timestamp}: [login-start] REF_ID=${REF_ID}, AD_ID=${AD_ID}\n`;
+    let line = `${timestamp}: [login-start] REF_ID=${REF_ID}, AD_ID=${AD_ID}, MU_ID=${MU_ID}\n`;
     require('fs').appendFile(LOG_FILE, line, function() {});
     res.sendStatus(200);
   });

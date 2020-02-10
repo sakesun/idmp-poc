@@ -30,6 +30,8 @@ paths:
                 type: string
               AD_ID:
                 type: string
+              MU_ID:
+                type: string
       responses:
         '200':
           description: OK
@@ -47,6 +49,8 @@ paths:
               REF_ID:
                 type: string
               AD_ID:
+                type: string
+              MU_ID:
                 type: string
       responses:
         '200':
