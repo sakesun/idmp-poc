@@ -1,0 +1,132 @@
+[
+  {
+    "id"          : 1823,
+    "name"        : "Bottom Banner Template",
+    "type"        : "inApp",
+    "platforms"   : ["ANDROID", "IOS"],
+    "label"       : "In-app message",
+    "description" : "Bottom Banner",
+    "payload": {
+      "rules"       : ["bottomBanner", "all"],
+      "maxViews"    : "${maxViews}",
+      "template"    : "default",
+      "content"     : {
+        "mainImage"    : "${mainImageUrl}",
+        "title"        : "${title}",
+        "text"         : "${text}",
+        "color"        : "${color}",
+        "icon"         : "note",
+        "action"       : { "type": "url", "value": "http://www.ibm.com" }
+      }
+    },
+    "sections": [
+      {
+        "label"   : "Enter message",
+        "customProperties": [
+          { "id": "${mainImageUrl}", "inputRequired": true, "type": "url",    "placeholder": "Main Image URL", "value": "http://imgur.com/aoeu" },
+          { "id": "${title}",        "inputRequired": true, "type": "string", "placeholder": "Title",          "value": null },
+          { "id": "${text}",         "inputRequired": true, "type": "string", "placeholder": "Message",        "value": null },
+          { "id": "${color}",        "inputRequired": true, "type": "string", "placeholder": "Color",          "value": "#00ff00" },
+          { "id": "${maxViews}",     "inputRequired": true, "type": "number", "placeholder": "Max views",      "value": 3 }
+        ]
+      }
+    ]
+  },
+  {
+    "id"          : 1803,
+    "name"        : "Image Template",
+    "type"        : "inApp",
+    "platforms"   : ["ANDROID", "IOS"],
+    "label"       : "In-app Image Template",
+    "description" : "Image Template.",
+    "payload": {
+      "rules"       : ["image", "all"],
+      "maxViews"    : "${maxViews}",
+      "template"    : "image",
+      "content": {
+        "title"       : "${subject}",
+        "text"        : "${message}",
+        "image"       : "${imageUrl}",
+        "icon"        : "note",
+        "action"      : { "type": "url", "value": "${actionUrl}" }
+      }
+    },
+    "sections": [
+      {
+        "label": "Enter message",
+        "customProperties": [
+          { "id": "${maxViews}",  "inputRequired": true, "type": "number", "placeholder": "Max views",               "value": 3  },
+          { "id": "${subject}",   "inputRequired": true, "type": "string", "placeholder": "Title",                   "value": null  },
+          { "id": "${message}",   "inputRequired": true, "type": "string", "placeholder": "Expandable text message", "value": null },
+          { "id": "${imageUrl}",  "inputRequired": true, "type": "url",    "placeholder": "Image URL",               "value": null  },
+          { "id": "${actionUrl}", "inputRequired": true, "type": "url",    "placeholder": "Action URL",              "value": null }
+        ]
+      }
+    ]
+  },
+  {
+    "id"          : 1822,
+    "name"        : "Video Template",
+    "type"        : "inApp",
+    "platforms"   : ["ANDROID", "IOS"],
+    "label"       : "In-app Video Template",
+    "description" : "Video Template",
+    "payload": {
+      "rules"       : ["video", "all"],
+      "maxViews"    : "${maxViews}",
+      "template"    : "video",
+      "content": {
+        "title"       : "${subject}",
+        "text"        : "${message}",
+        "video"       : "${videoUrl}",
+        "action"      : { "type": "url", "value": "${actionUrl}" }
+      }
+    },
+    "sections": [
+      {
+        "label": "Enter message",
+        "customProperties": [
+          { "id": "${maxViews}",  "inputRequired": true, "type": "number", "placeholder": "Max views",               "value": 3 },
+          { "id": "${subject}",   "inputRequired": true, "type": "string", "placeholder": "Title",                   "value": null },
+          { "id": "${message}",   "inputRequired": true, "type": "string", "placeholder": "Expandable text message", "value": null },
+          { "id": "${videoUrl}",  "inputRequired": true, "type": "url",    "placeholder": "Video Stream URL",        "value": null },
+          { "id": "${actionUrl}", "inputRequired": true, "type": "url",    "placeholder": "Action URL",              "value": null }
+        ]
+      }
+    ]
+  },
+  {
+    "id"          : 1824,
+    "name"        : "Top Banner Template",
+    "type"        : "inApp",
+    "platforms"   : ["ANDROID", "IOS"],
+    "label"       : "In-app message",
+    "description" : "Use to create a top banner message that is displayed in the app when the specified rules are met.",
+    "payload": {
+      "rules"       : ["topBanner", "all"],
+      "maxViews"    : "${maxViews}",
+      "template"    : "default",
+      "content": {
+        "orientation" : "top",
+        "mainImage"   : "${mainImageUrl}",
+        "title"       : "${title}",
+        "text"        : "${text}",
+        "color"       : "${color}",
+        "icon"        : "note",
+        "action"      : { "type": "url", "value": "http://www.ibm.com" }
+      }
+    },
+    "sections": [
+      {
+        "label": "Enter message",
+        "customProperties": [
+          { "id": "${mainImageUrl}", "inputRequired": true, "type": "url",    "placeholder": "Main Image URL", "value": "http://imgur.com/aoeu" },
+          { "id": "${title}",        "inputRequired": true, "type": "string", "placeholder": "Title",          "value": null },
+          { "id": "${text}",         "inputRequired": true, "type": "string", "placeholder": "Message",        "value": null },
+          { "id": "${color}",        "inputRequired": true, "type": "string", "placeholder": "Color",          "value": "#00ff00" },
+          { "id": "${maxViews}",     "inputRequired": true, "type": "number", "placeholder": "Max views",      "value": 3 }
+        ]
+      }
+    ]
+  }
+]
