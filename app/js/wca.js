@@ -6,18 +6,6 @@ const wcaClientId     = '894b6479-a151-42a2-a20e-a5b2c289b3ea';
 const wcaClientSecret = '223b0729-f310-47d5-bf23-bf661f59363c';
 const wcaRefreshToken = 'rUI5NJ-8tWArMkvS6o38KwBvgWc1LKpFoJ3VdeJVZLGMS1';
 
-const DeliveryName    = 'delivery.pocLogin';
-const Apps            = 'TMB POC Android';
-const CampaignName    = 'campaign.pocLogin';
-const ChannelId       = '5Xw78bG7';
-const ContentId       = '83e1888c-ac07-4d79-a550-2b82d0694df7';
-
-
-// {     "expirationDate": "2100-01-01T00:00:00.000+00:00",
-//       "maxViews": 4,
-//       "inAppContentId": "83e1888c-ac07-4d79-a550-2b82d0694df7"
-// }
-
 // #Region utility
 function doRequest(url) {
     return new Promise(function (resolve, reject) {
@@ -64,15 +52,49 @@ async function wcaGenToken() {
     return result;
 }
 
-async function wcaPushMessage() {
-  let payload =  { InAppMessage: {
-
-expirationDate (Date): InApp message expiration date represented in a String as per RFC 3339 ('1970-01-01T00:00:00.000+00:00'),
-maxViews (Integer): Maximum number of views on the InApp message,
-inAppContentId (InAppContentId): InApp message content id
+const testing = `
+{
+  "appKeys": ["gc8m81N7AU"],
+  "content": {
+    "inAppMessage": {
+      "expirationDate": "2090-08-25T22:34:51.123+00:00",
+      "maxViews": 5,
+      "inAppContentId": "83e1888c-ac07-4d79-a550-2b82d0694df7"
+    }
+  },
+  "contacts": [
+    {
+      "lookupKeyFields": [{"channel": "5Xw78bG7", "name": "Mobile User Id", "value": "vsXMZWPCiu2Oc3cK"}],
+      "channel": {
+        "qualifier": "gc8m81N7AU",
+        "destination": "5Xw78bG7",
+        "appKey": "gc8m81N7AU",
+        "userId": "vsXMZWPCiu2Oc3cK",
+        "channelId": "5Xw78bG7"
+      }
+    }
+  ],
+  "campaignName": "campaign.pocLogin"
 }
+`;
 
-
+async function wcaPushMessage() {
+  const DeliveryName    = 'delivery.pocLogin';
+  const Apps            = 'TMB POC Android';
+  const CampaignName    = 'campaign.pocLogin';
+  const AppKey          = 'gc8m81N7AU';
+  const ChannelId       = '5Xw78bG7';
+  const ContentId       = '83e1888c-ac07-4d79-a550-2b82d0694df7';
+  let token = await wcaGenToken();
+  let options = {
+    method: 'POST',
+    url: reqWCAHost,
+    headers: {
+      'Content-Type': 'text/xml',
+      'Authorization': `Bearer ${token.tokenString}`
+    },
+    body: ``
+  };
 }
 
 async function wcaSendMail(paramMailingId, paramReceiver, paramList = []) {
@@ -89,9 +111,16 @@ async function wcaSendMail(paramMailingId, paramReceiver, paramList = []) {
               'Content-Type': 'text/xml',
               'Authorization': `Bearer ${tokenString}`
             },
-            body: `<Envelope>\n    <Body>\n        <SendMailing>\n            <MailingId>${paramMailingId}</MailingId>\n            <RecipientEmail>${paramReceiver}</RecipientEmail>\n        </SendMailing>\n    </Body>\n</Envelope>`
-
-          };
+            body: `
+              <Envelope>
+                <Body>
+                  <SendMailing>
+                    <MailingId>${paramMailingId}</MailingId>
+                    <RecipientEmail>${paramReceiver}</RecipientEmail>
+                  </SendMailing>
+                </Body>
+              </Envelope>`
+        };
         var sendMailResult = await doRequest(wcaOptions);
         var resultJson = await convertXMLToJson(sendMailResult);
         var reqResult = resultJson.Envelope.Body[0].RESULT[0].SUCCESS[0];
@@ -122,4 +151,9 @@ async function wcaSendMail(paramMailingId, paramReceiver, paramList = []) {
 }
 //
 
-wcaGenToken().then(r => console.log(r));
+async function test() {
+  let token = (await wcaGenToken()).data;
+  console.log(token);
+}
+
+test();
