@@ -2,3 +2,4 @@
 /js/*.js~
 */node_modules
 /php/
+/app/public/log-file.txt
