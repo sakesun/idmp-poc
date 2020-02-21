@@ -57,8 +57,8 @@ function wcaVideoContent(title, text, video,  action) {
 function wcaDefaultPayload(rules, maxViews, content) {
   let detail = {
     rules,
-    template: TEMPLATE_DEFAULT,
     maxViews,
+    template: TEMPLATE_DEFAULT,
     content };
   return { "gcm": detail, "apns": detail };
 }
@@ -67,8 +67,8 @@ function wcaTopBannerPayload(rules, maxViews, content) {
   let detail = {
     duration: 300,
     rules,
-    template: TEMPLATE_TOP_BANNER,
     maxViews,
+    template: TEMPLATE_TOP_BANNER,
     content };
   return { "gcm": detail, "apns": detail };
 }
@@ -77,8 +77,8 @@ function wcaBottomBannerPayload(rules, maxViews, content) {
   let detail = {
     duration: 300,
     rules,
-    template: TEMPLATE_BOTTOM_BANNER,
     maxViews,
+    template: TEMPLATE_BOTTOM_BANNER,
     content };
   return { "gcm": detail, "apns": detail };
 }
@@ -86,8 +86,8 @@ function wcaBottomBannerPayload(rules, maxViews, content) {
 function wcaImagePayload(rules, maxViews, content) {
   let detail = {
     rules,
-    template: TEMPLATE_IMAGE,
     maxViews,
+    template: TEMPLATE_IMAGE,
     content };
   return { "gcm": detail, "apns": detail };
 }
@@ -95,8 +95,8 @@ function wcaImagePayload(rules, maxViews, content) {
 function wcaVideoPayload(rules, maxViews, content) {
   let detail = {
     rules,
-    template: TEMPLATE_VIDEO,
     maxViews,
+    template: TEMPLATE_VIDEO,
     content };
   return { "gcm": detail, "apns": detail };
 }
@@ -382,3 +382,4 @@ module.exports = {
 };
 
 // test();
+// { "gcm": { "rules": ["all"], "template": "image", "maxViews": 1, "content": {"title": "the titl", "text": "the test", "image": "https://picsum.photos/512/512.jpg", "icon": "note", "action": "", "duration": 86400 } } }
