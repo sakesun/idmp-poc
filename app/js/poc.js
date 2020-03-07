@@ -1,4 +1,15 @@
 module.exports = (app) => {
+  const wca = require('./wca');
+
+  let _wcaClient = null;
+
+  function getWcaClient() {
+    if (_wcaClient == null) {
+      const wca = require('./wca');
+      _wcaClient = new wca.WcaClient();
+    }
+    return _wcaClient;
+  }
 
   const DEFAULT_COOKIE_MAXAGE  = (1000 * 60 * 60 * 24 * 365 * 10);
   const DEFAULT_COOKIE_EXPIRES = new Date(Number(new Date()) + DEFAULT_COOKIE_MAXAGE);
@@ -7,11 +18,13 @@ module.exports = (app) => {
     maxAge:  DEFAULT_COOKIE_MAXAGE,
     httpOnly: false };
 
-  const ACCOUNT_SUMMARY             = "ACCOUNT_SUMMARY";     // This wil be shown after login in our understanding
-  const TRANSFER_COMPLETE           = "TRANSFER_COMPLETE";
-  const BILL_PAYMENT_COMPLETE       = "BILL_PAYMENT_COMPLETE";
-  const CHECK_SAVING_ACCOUNT_DETAIL = "CHECK_SAVING_ACCOUNT_DETAIL";
-  const CHECK_CARD_ACCOUNT_DETAIL   = "CHECK_CARD_ACCOUNT_DETAIL";
+  let ACCOUNT_SUMMARY             = "ACCOUNT_SUMMARY";     // This wil be shown after login in our understanding
+  let TRANSFER_COMPLETE           = "TRANSFER_COMPLETE";
+  let BILL_PAYMENT_COMPLETE       = "BILL_PAYMENT_COMPLETE";
+  let CHECK_SAVING_ACCOUNT_DETAIL = "CHECK_SAVING_ACCOUNT_DETAIL";
+  let CHECK_CARD_ACCOUNT_DETAIL   = "CHECK_CARD_ACCOUNT_DETAIL";
+
+  ACCOUNT_SUMMARY = TRANSFER_COMPLETE = BILL_PAYMENT_COMPLETE = CHECK_SAVING_ACCOUNT_DETAIL = CHECK_CARD_ACCOUNT_DETAIL = 'all';
 
   function setCookie(res, name, value, options) {
     if (options == null) options = DEFAULT_COOKIE_OPTIONS;
@@ -75,17 +88,19 @@ module.exports = (app) => {
     res.send('hi');
   });
 
-  app.post('/mobile/send-id', (req, res) => {
+  app.post('/mobile/send-id', async (req, res) => {
     let REF_ID = req.body.REF_ID;
     let AD_ID  = req.body.AD_ID;
     let MU_ID  = req.body.MU_ID || "";
-    let wca = require('./wca');
-    let c = new wca.WcaClient();
+    let ts     = req.body.TS || '-';
+    let c = getWcaClient();
     if (MU_ID != null && MU_ID != '') {
       let contacts = [wca.wcaContactByMobileUserId(MU_ID)];
       let img = 'https://picsum.photos/1024/1800.jpg';
       let act = wca.wcaUrlAction('https://www.tmbbank.com');
-      c.pushImage(contacts, [ACCOUNT_SUMMARY], 'Title for Account Summary', 'Text for Account Summary', img, 'note', act);
+      let title   = 'Start : ' + ts;
+      let message = 'At server: ' + (new Date().toLocaleString());
+      await c.pushImage(contacts, [ACCOUNT_SUMMARY], title, message, img, 'note', act);
     }
     let timestamp = new Date().toISOString();
     let line = `${timestamp}: [send-id] REF_ID=${REF_ID}, AD_ID=${AD_ID}, MU_ID=${MU_ID}\n`;
@@ -93,12 +108,11 @@ module.exports = (app) => {
     res.sendStatus(200);
   });
 
-  app.post('/mobile/login-start', (req, res) => {
+  app.post('/mobile/login-start', async (req, res) => {
     let REF_ID = req.body.REF_ID;
     let AD_ID  = req.body.AD_ID;
     let MU_ID  = req.body.MU_ID || "";
-    let wca = require('./wca');
-    let c = new wca.WcaClient();
+    let c = getWcaClient();
     if (MU_ID != null && MU_ID != '') {
       let contacts = [wca.wcaContactByMobileUserId(MU_ID)];
       let img = 'https://www.earticleblog.com/wp-content/uploads/2016/08/airtel-hanset-special-offers.png';
@@ -109,7 +123,7 @@ module.exports = (app) => {
         BILL_PAYMENT_COMPLETE,
         CHECK_SAVING_ACCOUNT_DETAIL,
         CHECK_CARD_ACCOUNT_DETAIL ];
-      c.pushImage(contacts, rules, 'Title for Any page', 'Text for Any page', img, 'note', act);
+      await c.pushImage(contacts, rules, 'Title for Any page', 'Text for Any page\n' + new Date().toString(), img, 'note', act);
     }
     let timestamp = new Date().toISOString();
     let line = `${timestamp}: [login-start] REF_ID=${REF_ID}, AD_ID=${AD_ID}, MU_ID=${MU_ID}\n`;

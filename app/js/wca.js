@@ -6,14 +6,7 @@ const wcaClientId     = '894b6479-a151-42a2-a20e-a5b2c289b3ea';
 const wcaClientSecret = '223b0729-f310-47d5-bf23-bf661f59363c';
 const wcaRefreshToken = 'rUI5NJ-8tWArMkvS6o38KwBvgWc1LKpFoJ3VdeJVZLGMS1';
 
-// const sakeAppKey      =  'gc8m81N7AU';
-// const sakeAppKey      = 'gc8NgHDn0s';
-const sakeAppKey      =  'gcqqPL7cYI';
-//const sakeUserId      = 'vsXMZWPCiu2Oc3cK';
 const sakeUserId      = 'OFzJQSRbaA8WnY76';
-// const sakeChannel     = '5Xw78bG7';
-// const sakeUserId      = 'kc7r0F8C3wvhwCYG';
-// const sakeRecipientId = 218996056461;
 const testContentId   = '83e1888c-ac07-4d79-a550-2b82d0694df7';
 const testCampaignName = 'campaign.pocLogin';
 
@@ -57,8 +50,8 @@ function wcaVideoContent(title, text, video,  action) {
 function wcaDefaultPayload(rules, maxViews, content) {
   let detail = {
     rules,
-    maxViews,
     template: TEMPLATE_DEFAULT,
+    maxViews,
     content };
   return { "gcm": detail, "apns": detail };
 }
@@ -67,8 +60,8 @@ function wcaTopBannerPayload(rules, maxViews, content) {
   let detail = {
     duration: 300,
     rules,
-    maxViews,
     template: TEMPLATE_TOP_BANNER,
+    maxViews,
     content };
   return { "gcm": detail, "apns": detail };
 }
@@ -77,8 +70,8 @@ function wcaBottomBannerPayload(rules, maxViews, content) {
   let detail = {
     duration: 300,
     rules,
-    maxViews,
     template: TEMPLATE_BOTTOM_BANNER,
+    maxViews,
     content };
   return { "gcm": detail, "apns": detail };
 }
@@ -86,8 +79,8 @@ function wcaBottomBannerPayload(rules, maxViews, content) {
 function wcaImagePayload(rules, maxViews, content) {
   let detail = {
     rules,
-    maxViews,
     template: TEMPLATE_IMAGE,
+    maxViews,
     content };
   return { "gcm": detail, "apns": detail };
 }
@@ -95,8 +88,8 @@ function wcaImagePayload(rules, maxViews, content) {
 function wcaVideoPayload(rules, maxViews, content) {
   let detail = {
     rules,
-    maxViews,
     template: TEMPLATE_VIDEO,
+    maxViews,
     content };
   return { "gcm": detail, "apns": detail };
 }
@@ -227,63 +220,6 @@ async function wcaSendMail(paramMailingId, paramReceiver, paramList = []) {
   return result;
 }
 
-
-
-async function testDefault(token, rules, maxViews, img, title, text, color, icon, action) {
-  let payload = wcaDefaultPayload(rules, maxViews, wcaDefaultContent(img, title, text, color, icon, action));
-  let inAppContent = JSON.parse(await wcaPostInAppContentPayload(token, payload));
-  let inAppContentId = inAppContent.data.id;
-  let contacts = [wcaContactByMobileUserId(sakeUserId)];
-  let r = await wcaPushInApp(token, [sakeAppKey], '2020-03-25T22:34:51.123+00:00', maxViews, inAppContentId, contacts);
-  return r;
-}
-
-// async function testTopBanner(token, rules, maxViews, img, title, text, color, icon, action) {
-//   let payload = wcaTopBannerPayload(rules, 5, wcaTopBannerContent(img, title, text, color, icon, action));
-//   let inAppContent = JSON.parse(await wcaPostInAppContentPayload(token, payload));
-//   let inAppContentId = inAppContent.data.id;
-//   let contacts = [wcaContactByMobileUserId(sakeUserId)];
-//   let r = await wcaPushInApp(token, [sakeAppKey], '2020-03-25T22:34:51.123+00:00', 5, inAppContentId, contacts);
-//   return r;
-// }
-
-// async function testBottomBanner(token, rules, maxViews, img, title, text, color, icon, action) {
-//   let payload = wcaBottomBannerPayload(rules, 5, wcaBottomBannerContent(img, title, text, color, icon, action));
-//   let inAppContent = JSON.parse(await wcaPostInAppContentPayload(token, payload));
-//   let inAppContentId = inAppContent.data.id;
-//   let contacts = [wcaContactByMobileUserId(sakeUserId)];
-//   let r = await wcaPushInApp(token, [sakeAppKey], '2020-03-25T22:34:51.123+00:00', 5, inAppContentId, contacts);
-//   return r;
-// }
-
-async function oldtest() {
-  try {
-    let token = (await wcaGenToken()).data.access_token;;
-    let msg = new Date().toString();
-    await testDefault(
-      token, ['all'], 1,
-      'https://www.tmbbank.com/assets/common/img/logo-tmb.png',
-      'the default title', msg, '#ff00ff', 'note',
-      wcaUrlAction('https://www.tmbbank.com/home'));
-    // await testTopBanner(
-    //   token, ['all'], 5,
-    //   'https://www.tmbbank.com/assets/common/img/logo-tmb.png',
-    //   'the title', 'the text', '#ff00ff', 'note',
-    //   wcaUrlAction('https://www.tmbbank.com/home'));
-    // await testBottomBanner(
-    //   token, ['all'], 5,
-    //   'https://www.tmbbank.com/assets/common/img/logo-tmb.png',
-    //   'the title', 'the text', '#ff00ff', 'note',
-    //   wcaUrlAction('https://www.tmbbank.com/home'));
-  } catch (e) {
-    console.log('ERROR:');
-    console.log(' ', e);
-    console.log(' ', e.statusCode);
-    console.log(' ', e.statusMessage);
-    console.log(' ', e.body);
-  }
-}
-
 const CONFIG_TMB = {
   HOST: reqWCAHost,
   AUTH: reqWCAAuthHost,
@@ -300,37 +236,64 @@ function WcaClient(config) {
 
 WcaClient.prototype.prepareToken = async function() {
   if (this.token != null) return;
+  console.info('Preparing token');
   this.token = (await wcaGenToken(this.config.AUTH, this.config.CLIENT_ID, this.SECRET, this.REFRESH)).data;
+  console.info('  token: ' + JSON.stringify(this.token));
+};
+
+WcaClient.prototype.tokenPrepared = async function(run) {
+  await this.prepareToken();
+  console.info('  using token: ' + JSON.stringify(this.token));
+  try {
+    return await run();
+  } catch (e) {
+    console.error(e);
+    console.error(JSON.stringify(e));
+    this.token = null;
+    try {
+      await this.prepareToekn();
+      return await run();
+    } catch (e) {
+      console.error(e);
+      console.error(JSON.stringify(e));
+      this.token = null;
+      throw e;
+    }
+  }
 };
 
 WcaClient.prototype.postContentDefault = async function(rules, orientation, mainImage, title, text, color, icon, action) {
-  await this.prepareToken();
-  let content = wcaDefaultContent(mainImage, title, text, color, icon, action, DURATION_DEFAULT);
-  content.orientation = orientation;
-  let payload = wcaDefaultPayload(rules, 1,content);
-  return await wcaPostInAppContentPayload(this.token.access_token, payload);
+  return this.tokenPrepared(async () => {
+    let content = wcaDefaultContent(mainImage, title, text, color, icon, action, DURATION_DEFAULT);
+    content.orientation = orientation;
+    let payload = wcaDefaultPayload(rules, 1,content);
+    return await wcaPostInAppContentPayload(this.token.access_token, payload);
+  });
 };
 
 WcaClient.prototype.postContentImage = async function(rules, title, text, image, icon, action) {
-  await this.prepareToken();
-  let content = wcaImageContent(title, text, image, icon, action);
-  let payload = wcaImagePayload(rules, 1, content);
-  return await wcaPostInAppContentPayload(this.token.access_token, payload);
+  return this.tokenPrepared(async () => {
+    let content = wcaImageContent(title, text, image, icon, action);
+    let payload = wcaImagePayload(rules, 1, content);
+    return await wcaPostInAppContentPayload(this.token.access_token, payload);
+  });
 };
 
 WcaClient.prototype.postContentVideo = async function(rules, title, text, video, action) {
-  await this.prepareToken();
-  let content = wcaVideoContent(title, text, video, action);
-  let payload = wcaVideoPayload(rules, 1, content);
-  return await wcaPostInAppContentPayload(this.token.access_token, payload);
+  return this.tokenPrepared(async () => {
+    let content = wcaVideoContent(title, text, video, action);
+    let payload = wcaVideoPayload(rules, 1, content);
+    return await wcaPostInAppContentPayload(this.token.access_token, payload);
+  });
 };
 
 WcaClient.prototype.pushDefault = async function(contacts, rules, orientation, mainImage, title, text, color, icon, action) {
-  await this.prepareToken();
-  let content = await this.postContentDefault(rules, orientation, mainImage, title, text, color, icon, action);
-  let contentId = JSON.parse(content).data.id;
-  let expiration = new Date(new Date().getTime() + (1 * 24 * 60 * 60 * 1000)).toISOString();
-  return await wcaPushInApp(this.token.access_token, this.config.APP_KEYS, expiration, 1, contentId, contacts);
+  return this.tokenPrepared(async () => {
+    let content = await this.postContentDefault(rules, orientation, mainImage, title, text, color, icon, action);
+    let contentId = JSON.parse(content).data.id;
+    let expiration = new Date(new Date().getTime() + (1 * 24 * 60 * 60 * 1000)).toISOString();
+    return await wcaPushInApp(this.token.access_token, this.config.APP_KEYS, expiration, 1, contentId, contacts);
+  });
 };
 
 WcaClient.prototype.pushTop = async function(contacts, rules, mainImage, title, text, color, icon, action) {
@@ -342,19 +305,21 @@ WcaClient.prototype.pushBottom = async function(contacts, rules, mainImage, titl
 };
 
 WcaClient.prototype.pushImage = async function(contacts, rules, title, text, image, icon, action) {
-  await this.prepareToken();
-  let content = await this.postContentImage(rules, title, text, image, icon, action);
-  let contentId = JSON.parse(content).data.id;
-  let expiration = new Date(new Date().getTime() + (1 * 24 * 60 * 60 * 1000)).toISOString();
-  return await wcaPushInApp(this.token.access_token, this.config.APP_KEYS, expiration, 1, contentId, contacts);
+  return this.tokenPrepared(async () => {
+    let content = await this.postContentImage(rules, title, text, image, icon, action);
+    let contentId = JSON.parse(content).data.id;
+    let expiration = new Date(new Date().getTime() + (1 * 24 * 60 * 60 * 1000)).toISOString();
+    return await wcaPushInApp(this.token.access_token, this.config.APP_KEYS, expiration, 1, contentId, contacts);
+  });
 };
 
 WcaClient.prototype.pushVideo = async function(contacts, rules, title, text, video, action) {
-  await this.prepareToken();
-  let content = await this.postContentVideo(rules, title, text, video, action);
-  let contentId = JSON.parse(content).data.id;
-  let expiration = new Date(new Date().getTime() + (1 * 24 * 60 * 60 * 1000)).toISOString();
-  return await wcaPushInApp(this.token.access_token, this.config.APP_KEYS, expiration, 1, contentId, contacts);
+  return this.tokenPrepared(async () => {
+    let content = await this.postContentVideo(rules, title, text, video, action);
+    let contentId = JSON.parse(content).data.id;
+    let expiration = new Date(new Date().getTime() + (1 * 24 * 60 * 60 * 1000)).toISOString();
+    return await wcaPushInApp(this.token.access_token, this.config.APP_KEYS, expiration, 1, contentId, contacts);
+  });
 };
 
 async function test() {
@@ -382,4 +347,3 @@ module.exports = {
 };
 
 // test();
-// { "gcm": { "rules": ["all"], "template": "image", "maxViews": 1, "content": {"title": "the titl", "text": "the test", "image": "https://picsum.photos/512/512.jpg", "icon": "note", "action": "", "duration": 86400 } } }
