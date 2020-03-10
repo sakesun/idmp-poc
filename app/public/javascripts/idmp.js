@@ -1,5 +1,5 @@
-var MILLISECONDS_AFTER_BCP = 200;
-var MAX_LOAD_PROFILE_COUNT = 20;
+var MILLISECONDS_AFTER_BCP = 250;
+var MAX_LOAD_PROFILE_COUNT = 16;
 
 function idmpLog(log) { console.log(log); }
 
@@ -49,7 +49,11 @@ function tryLoadProfile(account, onProfile) {
 
 function lotameLoadProfile(account, onProfile, counter) {
   counter = counter || 0;
-  if (counter >= MAX_LOAD_PROFILE_COUNT) return;
+  if (counter >= MAX_LOAD_PROFILE_COUNT) {
+    var p = idmpFallbackProfile();
+    onProfile(p);
+    return;
+  }
   tryLoadProfile(account, function(p) {
     if (p.pid != "") {
       onProfile(p);
@@ -72,4 +76,16 @@ function lotameBcp(account, onBcp) {
     var bcp = window[name];
     onBcp(bcp);
   });
+}
+
+function idmpFallbackProfileId() {
+  return 'IDMPxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+function idmpFallbackProfile() {
+  var pid = idmpFallbackProfileId();
+  return { tpid: pid, pid: pid, Audiences: { Audience: [] } };
 }
